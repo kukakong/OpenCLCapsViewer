@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenCL Hardware Capability Viewer - 使用说明</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1, h2, h3, h4 {
+            color: #333;
+        }
+        h1 {
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        h2 {
+            border-bottom: 2px solid #2196F3;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+        pre {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            background-color: #e8e8e8;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .info-box {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .warning-box {
+            background-color: #fff3e0;
+            border-left: 4px solid #FF9800;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .success-box {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        ul, ol {
+            margin: 10px 0;
+            padding-left: 30px;
+        }
+        li {
+            margin: 5px 0;
+        }
+        a {
+            color: #2196F3;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>OpenCL Hardware Capability Viewer - 使用说明</h1>
+    
+    <h2>简介</h2>
+    <p>OpenCL Hardware Capability Viewer 是一个用于显示支持 OpenCL API 的设备硬件实现细节的客户端应用程序。硬件报告可以提交到公共<a href="https://opencl.gpuinfo.org/">在线数据库</a>，用于比较不同设备、浏览可用功能、扩展、格式等。</p>
+    
+    <h2>支持的平台</h2>
+    <ul>
+        <li><strong>Linux</strong> (x64) - GUI 和 CLI 版本</li>
+        <li><strong>Windows</strong> (x64) - GUI 版本</li>
+        <li><strong>Android</strong> - GUI 版本</li>
+    </ul>
+    
+    <div class="warning-box">
+        <strong>注意:</strong> 需要 OpenCL 兼容设备（GPU、CPU）
+    </div>
+
+    <h2>版本说明</h2>
+    <h3>GUI 版本</h3>
+    <p>带有图形用户界面的版本，推荐使用方式。提供完整的设备信息显示、报告保存和上传功能。</p>
+    
+    <h3>CLI 版本</h3>
+    <p>无图形界面的命令行版本，适用于：</p>
+    <ul>
+        <li>无图形界面的服务器环境</li>
+        <li>自动化脚本</li>
+        <li>CI/CD 集成</li>
+    </ul>
+
+    <h2>命令行参数</h2>
+    <table>
+        <tr><th>参数</th><th>描述</th><th>示例</th></tr>
+        <tr><td><code>--help</code></td><td>打印所有可用的命令行参数</td><td></td></tr>
+        <tr><td><code>--log</code></td><td>将日志消息写入文本文件用于调试 (log.txt)</td><td></td></tr>
+        <tr><td><code>--devices</code></td><td>列出可用的 OpenCL 设备及其索引</td><td></td></tr>
+        <tr><td><code>--save &lt;文件&gt;</code></td><td>保存报告到磁盘</td><td><code>--save opencl_report.json</code></td></tr>
+        <tr><td><code>--upload</code></td><td>上传指定设备索引的报告到数据库（无交互）</td><td></td></tr>
+        <tr><td><code>--deviceindex &lt;索引&gt;</code></td><td>设置设备索引（从0开始），用于报告上传</td><td><code>--deviceindex 2</code></td></tr>
+        <tr><td><code>--submitter &lt;名称&gt;</code></td><td>设置报告提交者名称</td><td><code>--submitter "Some person"</code></td></tr>
+        <tr><td><code>--comment &lt;注释&gt;</code></td><td>设置报告注释</td><td><code>--comment "Beta driver"</code></td></tr>
+        <tr><td><code>--noproxy</code></td><td>禁用代理设置</td><td></td></tr>
+    </table>
+
+    <h2>使用示例</h2>
+    
+    <h3>GUI 版本</h3>
+    <p>直接运行程序：</p>
+    <pre><code>./OpenCLCapsViewer_linux_gui</code></pre>
+
+    <h3>CLI 版本</h3>
+    
+    <h4>1. 列出所有 OpenCL 设备</h4>
+    <pre><code>./OpenCLCapsViewer_linux_cli --devices</code></pre>
+
+    <h4>2. 保存设备报告到文件</h4>
+    <pre><code>./OpenCLCapsViewer_linux_cli --save opencl_report.json</code></pre>
+
+    <h4>3. 上传第二个设备的报告到数据库</h4>
+    <pre><code>./OpenCLCapsViewer_linux_cli --upload --deviceindex 1 --submitter "My Name" --comment "Beta driver"</code></pre>
+
+    <h4>4. 启用日志记录</h4>
+    <pre><code>./OpenCLCapsViewer_linux_cli --log --devices</code></pre>
+
+    <h2>运行时依赖</h2>
+    
+    <h3>Linux</h3>
+    <p>确保已安装以下依赖：</p>
+    <pre><code># Ubuntu/Debian
+sudo apt-get install libgl1 libx11-6 libxcb1 libxkbcommon0 \
+    libopengl0 libegl1 libwayland-client0
+
+# OpenCL 运行时
+sudo apt-get install ocl-icd-libopencl1</code></pre>
+
+    <p>设置 Qt 库路径（如果需要）：</p>
+    <pre><code>export LD_LIBRARY_PATH=/opt/Qt/6.8.3/gcc_64/lib:$LD_LIBRARY_PATH
+./OpenCLCapsViewer_linux_gui</code></pre>
+
+    <h3>Windows</h3>
+    <p>需要安装：</p>
+    <ul>
+        <li>Visual C++ Redistributable</li>
+        <li>OpenCL 驱动（通常随 GPU 驱动安装）</li>
+    </ul>
+
+    <h3>Android</h3>
+    <ul>
+        <li>Android 7.0 (API 25) 或更高版本</li>
+        <li>设备需要支持 OpenCL</li>
+    </ul>
+
+    <h2>功能说明</h2>
+    
+    <h3>设备信息显示</h3>
+    <p>程序会显示以下信息：</p>
+    <ul>
+        <li>平台信息（厂商、版本、扩展等）</li>
+        <li>设备信息（名称、类型、厂商、驱动版本等）</li>
+        <li>计算能力（最大工作组大小、计算单元等）</li>
+        <li>内存信息（全局内存、本地内存、常量内存等）</li>
+        <li>支持的图像格式</li>
+        <li>支持的扩展</li>
+    </ul>
+
+    <h3>报告上传</h3>
+    <p>可以将设备报告上传到公共数据库：</p>
+    <ol>
+        <li>选择目标设备</li>
+        <li>填写提交者名称和注释（可选）</li>
+        <li>点击上传按钮</li>
+    </ol>
+
+    <h2>故障排除</h2>
+    
+    <h3>找不到 OpenCL 设备</h3>
+    <ol>
+        <li>确保安装了 OpenCL 驱动：
+            <ul>
+                <li>NVIDIA: 安装 CUDA 驱动</li>
+                <li>AMD: 安装 AMDGPU-PRO 或 ROCm</li>
+                <li>Intel: 安装 Intel OpenCL Runtime</li>
+            </ul>
+        </li>
+        <li>检查 <code>/etc/OpenCL/vendors/</code> 目录是否存在 ICD 文件</li>
+    </ol>
+
+    <h3>程序无法启动</h3>
+    <ol>
+        <li>检查 Qt 库是否正确安装</li>
+        <li>设置正确的 <code>LD_LIBRARY_PATH</code></li>
+        <li>检查系统架构是否匹配</li>
+    </ol>
+
+    <h2>相关链接</h2>
+    <ul>
+        <li><a href="https://www.khronos.org/opencl/">OpenCL 官方网站</a></li>
+        <li><a href="https://opencl.gpuinfo.org/">在线数据库</a></li>
+        <li><a href="https://github.com/SaschaWillems/OpenCLCapsViewer">项目仓库</a></li>
+    </ul>
+
+    <p style="text-align: center; margin-top: 40px; color: #666;">
+        <em>文档更新时间: 2026-06-04</em>
+    </p>
+</body>
+</html>
