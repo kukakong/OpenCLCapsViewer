@@ -99,8 +99,6 @@ Android 版本需要：
 |------|------|--------|------|
 | Linux | GUI | OpenCLCapsViewer_linux_gui | ~500KB |
 | Linux | CLI | OpenCLCapsViewer_linux_cli | ~317KB |
-| Android | ARM64 | libOpenCLCapsViewer_arm64-v8a.so | ~627KB |
-| Android | ARM32 | libOpenCLCapsViewer_armeabi-v7a.so | ~558KB |
 
 ## 依赖说明
 
@@ -131,8 +129,7 @@ export LD_LIBRARY_PATH=/opt/Qt/6.8.3/gcc_64/lib:$LD_LIBRARY_PATH
 - ✅ Linux GUI 版本: 编译成功
 - ✅ Linux CLI 版本: 编译成功
 - ⚠️ Windows 版本: 需要在 Windows 环境编译
-- ✅ Android ARM64 版本: 编译成功 (Qt 6.7.3)
-- ✅ Android ARM32 版本: 编译成功 (Qt 6.7.3)
+- ⚠️ Android 版本: 需要 Android SDK/NDK 配置
 
 ---
 *报告生成时间: 2026-06-04*
