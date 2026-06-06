@@ -92,9 +92,12 @@
     <table>
         <tr><th>项目</th><th>版本</th></tr>
         <tr><td>操作系统</td><td>Ubuntu 24.04.3 LTS</td></tr>
-        <tr><td>Qt版本</td><td>6.8.3</td></tr>
-        <tr><td>编译器</td><td>GCC 13.3.0</td></tr>
-        <tr><td>构建日期</td><td>2026-06-04</td></tr>
+        <tr><td>Qt版本</td><td>6.7.3 (Android), 6.8.3 (Linux)</td></tr>
+        <tr><td>编译器</td><td>GCC 13.3.0 (Linux), Clang 14.0.7 (Android NDK r25c)</td></tr>
+        <tr><td>Java</td><td>OpenJDK 25.0.2</td></tr>
+        <tr><td>Gradle</td><td>8.14.4</td></tr>
+        <tr><td>Android SDK</td><td>Build-Tools 34.0.0</td></tr>
+        <tr><td>构建日期</td><td>2026-06-06</td></tr>
     </table>
 
     <h2>编译过程</h2>
@@ -118,52 +121,138 @@ apt-get install -y ocl-icd-opencl-dev opencl-headers
 pip3 install aqtinstall</code></pre>
 
     <h3>2. Qt 安装</h3>
-    <pre><code># 安装Qt 6.8.3 (Linux)
-aqt install-qt linux desktop 6.8.3 linux_gcc_64 -O /opt/Qt -m all
+    <pre><code># 安装Qt 6.7.3 (Android arm64 + armv7)
+aqt install-qt linux android 6.7.3 android_arm64_v8a -O /opt/Qt -m all
+aqt install-qt linux android 6.7.3 android_armv7 -O /opt/Qt -m all
 
-# 安装Qt 6.8.3 (Windows MinGW)
-aqt install-qt windows desktop 6.8.3 win64_mingw -O /opt/Qt -m all</code></pre>
+# 安装Qt 6.8.3 (Linux)
+aqt install-qt linux desktop 6.8.3 linux_gcc_64 -O /opt/Qt -m all</code></pre>
 
-    <h3>3. 初始化子模块</h3>
+    <h3>3. Android SDK / NDK 安装</h3>
+    <pre><code># 解压 NDK r25c
+tar xf android-ndk-r25c-linux.zip -C /opt/android-ndk/
+
+# 安装 Android SDK Build-Tools 34.0.0
+# (需要接受许可并下载 platforms;android-34)</code></pre>
+
+    <h3>4. 初始化子模块</h3>
     <pre><code>git submodule update --init --recursive</code></pre>
 
-    <h3>4. 编译 Linux GUI 版本</h3>
+    <h3>5. 编译 Linux GUI 版本</h3>
     <pre><code>mkdir -p build_linux_gui
 cd build_linux_gui
 /opt/Qt/6.8.3/gcc_64/bin/qmake ../OpenCLCapsViewer.pro -spec linux-g++ CONFIG+=release
 make -j$(nproc)</code></pre>
     
     <div class="success-box">
-        <strong>编译结果:</strong> 成功生成 <code>OpenCLCapsViewer</code> 可执行文件
+        <strong>编译结果:</strong> 成功生成 <code>OpenCLCapsViewer</code> 可执行文件 (510 KB)
     </div>
 
-    <h3>5. 编译 Linux CLI 版本（无UI命令行版本）</h3>
+    <h3>6. 编译 Linux CLI 版本（无UI命令行版本）</h3>
     <pre><code>mkdir -p build_linux_cli
 cd build_linux_cli
 /opt/Qt/6.8.3/gcc_64/bin/qmake ../OpenCLCapsViewerCLI.pro -spec linux-g++ CONFIG+=release
 make -j$(nproc)</code></pre>
     
     <div class="success-box">
-        <strong>编译结果:</strong> 成功生成 <code>OpenCLCapsViewer</code> 可执行文件
+        <strong>编译结果:</strong> 成功生成 <code>OpenCLCapsViewer</code> 可执行文件 (317 KB)
+    </div>
+
+    <h3>7. 编译 Android ARM64 (arm64-v8a) APK</h3>
+    <pre><code>mkdir -p build_android_arm64
+cd build_android_arm64
+export ANDROID_NDK_ROOT=/opt/android-ndk/android-ndk-r25c
+export ANDROID_SDK_ROOT=/opt/android-sdk
+/opt/Qt/6.7.3/android_arm64_v8a/bin/qmake ../OpenCLCapsViewer.pro -spec android-clang CONFIG+=release
+make -j$(nproc)
+make INSTALL_ROOT=android-build install
+/opt/Qt/6.7.3/gcc_64/bin/androiddeployqt \
+    --input android-OpenCLCapsViewer-deployment-settings.json \
+    --output android-build --android-platform android-34 --gradle
+
+# 修改 build.gradle：
+# 1. apply plugin: qtGradlePluginType → apply plugin: 'com.android.application'
+# 2. classpath 'com.android.tools.build:gradle:8.8.0' → '7.4.2'
+# 3. androidx.core:core:1.16.0 → 1.10.1
+# 4. 移除 android.bundle.enableUncompressedNativeLibs=false
+
+cd android-build
+gradle assembleDebug</code></pre>
+    
+    <div class="success-box">
+        <strong>编译结果:</strong> 成功生成 <code>OpenCLCapsViewer_android_arm64-v8a.apk</code> (~21.7 MB)
+    </div>
+
+    <h3>8. 编译 Android ARM32 (armeabi-v7a) APK</h3>
+    <pre><code>mkdir -p build_android_arm32
+cd build_android_arm32
+export ANDROID_NDK_ROOT=/opt/android-ndk/android-ndk-r25c
+export ANDROID_SDK_ROOT=/opt/android-sdk
+/opt/Qt/6.7.3/android_armv7/bin/qmake ../OpenCLCapsViewer.pro -spec android-clang CONFIG+=release
+make -j$(nproc)
+make INSTALL_ROOT=android-build install
+/opt/Qt/6.7.3/gcc_64/bin/androiddeployqt \
+    --input android-OpenCLCapsViewer-deployment-settings.json \
+    --output android-build --android-platform android-34 --gradle
+
+# 应用与 ARM64 相同的 build.gradle 修改
+cd android-build
+gradle assembleDebug</code></pre>
+    
+    <div class="success-box">
+        <strong>编译结果:</strong> 成功生成 <code>OpenCLCapsViewer_android_armeabi-v7a.apk</code> (~17.9 MB)
     </div>
 
     <h2>编译产物</h2>
     <table>
         <tr><th>平台</th><th>类型</th><th>文件名</th><th>大小</th></tr>
-        <tr><td>Linux</td><td>GUI</td><td>OpenCLCapsViewer_linux_gui</td><td>~500KB</td></tr>
-        <tr><td>Linux</td><td>CLI</td><td>OpenCLCapsViewer_linux_cli</td><td>~317KB</td></tr>
+        <tr><td>Linux</td><td>GUI</td><td>OpenCLCapsViewer_linux_gui</td><td>510 KB</td></tr>
+        <tr><td>Linux</td><td>CLI</td><td>OpenCLCapsViewer_linux_cli</td><td>317 KB</td></tr>
+        <tr><td>Android</td><td>ARM64 APK</td><td>OpenCLCapsViewer_android_arm64-v8a.apk</td><td>21.7 MB</td></tr>
+        <tr><td>Android</td><td>ARM32 APK</td><td>OpenCLCapsViewer_android_armeabi-v7a.apk</td><td>17.9 MB</td></tr>
     </table>
+
+    <h2>APK 安装方法</h2>
+    
+    <h3>ARM64 (arm64-v8a)</h3>
+    <pre><code>adb install -r OpenCLCapsViewer_android_arm64-v8a.apk</code></pre>
+    <p>适用于：大多数现代 Android 设备（Android 5.0+ / API 25+）</p>
+
+    <h3>ARM32 (armeabi-v7a)</h3>
+    <pre><code>adb install -r OpenCLCapsViewer_android_armeabi-v7a.apk</code></pre>
+    <p>适用于：旧版 Android 设备（Android 5.0+ / API 25+）</p>
+
+    <h2>问题修复记录</h2>
+    
+    <h3>1. CL/cl.h 文件找不到</h3>
+    <p><strong>问题</strong>: Android 编译时报 <code>'CL/cl.h' file not found</code></p>
+    <p><strong>原因</strong>: OpenCL-Headers 子模块未初始化</p>
+    <p><strong>解决</strong>: <code>git submodule update --init --recursive</code></p>
+
+    <h3>2. Gradle 与 androidx.core 不兼容</h3>
+    <p><strong>问题</strong>: <code>Dependency 'androidx.core:core:1.16.0' requires Android Gradle plugin 8.6.0 or higher</code></p>
+    <p><strong>解决</strong>: Android Gradle Plugin 降级到 7.4.2，androidx.core 降级到 1.10.1</p>
+
+    <h3>3. android.bundle.enableUncompressedNativeLibs 已弃用</h3>
+    <p><strong>问题</strong>: <code>The option 'android.bundle.enableUncompressedNativeLibs' is deprecated.</code></p>
+    <p><strong>解决</strong>: 从 <code>gradle.properties</code> 中移除该选项</p>
+
+    <h3>4. 符号比较警告</h3>
+    <p><strong>位置</strong>: <code>main.cpp:168</code> 和 <code>main.cpp:191</code></p>
+    <p><strong>类型</strong>: <code>int</code> 与 <code>size_t</code> 比较</p>
+    <p><strong>影响</strong>: 仅警告，不影响功能</p>
 
     <h2>构建状态</h2>
     <ul>
         <li><span class="success">✅ Linux GUI 版本:</span> 编译成功</li>
         <li><span class="success">✅ Linux CLI 版本:</span> 编译成功</li>
+        <li><span class="success">✅ Android ARM64 (arm64-v8a) APK:</span> 编译成功</li>
+        <li><span class="success">✅ Android ARM32 (armeabi-v7a) APK:</span> 编译成功</li>
         <li><span class="warning">⚠️ Windows 版本:</span> 需要在 Windows 环境编译</li>
-        <li><span class="warning">⚠️ Android 版本:</span> 需要 Android SDK/NDK 配置</li>
     </ul>
 
     <p style="text-align: center; margin-top: 40px; color: #666;">
-        <em>报告生成时间: 2026-06-04</em>
+        <em>报告生成时间: 2026-06-06</em>
     </p>
 </body>
 </html>
