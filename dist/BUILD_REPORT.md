@@ -11,8 +11,9 @@ OpenCL Hardware Capability Viewer 是一个用于显示支持 OpenCL API 的设�
 - **编译器**: GCC 13.3.0 (Linux), Clang 14.0.7 (Android NDK r25c)
 - **Java**: OpenJDK 25.0.2
 - **Gradle**: 8.14.4
-- **Android SDK**: Build-Tools 34.0.0
-- **构建日期**: 2026-06-06
+- **Android SDK**: Build-Tools 35.0.0, Platform android-35
+- **Android Gradle Plugin**: 8.5.0
+- **构建日期**: 2026-06-09
 
 ## 编译过程
 
@@ -54,8 +55,8 @@ aqt install-qt linux desktop 6.8.3 linux_gcc_64 -O /opt/Qt -m all
 # 解压 NDK r25c
 tar xf android-ndk-r25c-linux.zip -C /opt/android-ndk/
 
-# 安装 Android SDK Build-Tools 34.0.0
-# (需要接受许可并下载 platforms;android-34)
+# 安装 Android SDK Build-Tools 35.0.0
+# (需要接受许可并下载 platforms;android-35)
 ```
 
 ### 4. 初始化子模块
@@ -98,7 +99,7 @@ make -j$(nproc)
 make INSTALL_ROOT=android-build install
 /opt/Qt/6.7.3/gcc_64/bin/androiddeployqt \
     --input android-OpenCLCapsViewer-deployment-settings.json \
-    --output android-build --android-platform android-34 --gradle
+    --output android-build --android-platform android-35 --gradle
 
 # 修改 build.gradle 中：
 # 1. 将 apply plugin: qtGradlePluginType 替换为 apply plugin: 'com.android.application'
@@ -124,7 +125,7 @@ make -j$(nproc)
 make INSTALL_ROOT=android-build install
 /opt/Qt/6.7.3/gcc_64/bin/androiddeployqt \
     --input android-OpenCLCapsViewer-deployment-settings.json \
-    --output android-build --android-platform android-34 --gradle
+    --output android-build --android-platform android-35 --gradle
 
 # 应用与 ARM64 相同的 build.gradle 修改
 cd android-build
@@ -139,8 +140,8 @@ gradle assembleDebug
 |------|------|--------|------|
 | Linux | GUI | OpenCLCapsViewer_linux_gui | 510 KB |
 | Linux | CLI | OpenCLCapsViewer_linux_cli | 317 KB |
-| Android | ARM64 APK | OpenCLCapsViewer_android_arm64-v8a.apk | 21.7 MB |
-| Android | ARM32 APK | OpenCLCapsViewer_android_armeabi-v7a.apk | 17.9 MB |
+| Android | ARM64 APK | OpenCLCapsViewer_android_arm64-v8a.apk | 22.3 MB |
+| Android | ARM32 APK | OpenCLCapsViewer_android_armeabi-v7a.apk | 18.5 MB |
 
 ## APK 安装方法
 
