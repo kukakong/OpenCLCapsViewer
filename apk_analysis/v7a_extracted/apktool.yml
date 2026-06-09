@@ -1,0 +1,30 @@
+!!brut.androlib.meta.MetaInfo
+apkFileName: OpenCLCapsViewer_android_armeabi-v7a.apk
+compressionType: false
+doNotCompress:
+- resources.arsc
+- META-INF/androidx.annotation_annotation-experimental.version
+- META-INF/androidx.arch.core_core-runtime.version
+- META-INF/androidx.core_core.version
+- META-INF/androidx.interpolator_interpolator.version
+- META-INF/androidx.lifecycle_lifecycle-runtime.version
+- META-INF/androidx.versionedparcelable_versionedparcelable.version
+- png
+isFrameworkApk: false
+packageInfo:
+  forcedPackageId: '127'
+  renameManifestPackage: null
+sdkInfo:
+  minSdkVersion: '21'
+  targetSdkVersion: '35'
+sharedLibrary: false
+sparseResources: false
+unknownFiles: {}
+usesFramework:
+  ids:
+  - 1
+  tag: null
+version: 2.7.0-dirty
+versionInfo:
+  versionCode: '5'
+  versionName: '1.30'

@@ -7,7 +7,7 @@
    "qtPluginsDirectory": "plugins",
    "qtQmlDirectory": "qml",
    "sdk": "/opt/android-sdk",
-   "sdkBuildToolsRevision": "34.0.0",
+   "sdkBuildToolsRevision": "35.0.0",
    "ndk": "/opt/android-ndk/android-ndk-r25c",
    "toolchain-prefix": "llvm",
    "tool-prefix": "llvm",
