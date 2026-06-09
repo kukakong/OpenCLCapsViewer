@@ -9,8 +9,8 @@ INCLUDEPATH += ./GeneratedFiles \
     . \
     ./GeneratedFiles/Release
 
-ANDROID_MIN_SDK_VERSION = 25
-ANDROID_TARGET_SDK_VERSION = 35
+ANDROID_MIN_SDK_VERSION = 21
+ANDROID_TARGET_SDK_VERSION = 34
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
