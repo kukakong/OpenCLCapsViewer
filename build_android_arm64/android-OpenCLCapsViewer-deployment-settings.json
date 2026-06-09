@@ -15,7 +15,7 @@
    "architectures": {"arm64-v8a":"aarch64-linux-android"},
    "android-package-source-directory": "/workspace/android",
    "android-min-sdk-version": "21",
-   "android-target-sdk-version": "34",
+   "android-target-sdk-version": "35",
    "rcc-binary": "/opt/Qt/6.7.3/gcc_64/libexec/rcc",
    "qml-importscanner-binary": "/opt/Qt/6.7.3/gcc_64/libexec/qmlimportscanner",
    "qml-root-path": "/workspace",
